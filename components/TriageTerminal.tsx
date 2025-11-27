@@ -20,30 +20,36 @@ export default function TriageTerminal() {
         setWolfState("scanning");
         setOutput(null);
 
-        // 2. Simulate Processing
-        setTimeout(() => {
+        try {
+            // 2. Real API Call
             setWolfState("processing");
-            setTimeout(() => {
-                // Mock Result
-                const mockResult = {
-                    title: "Unauthenticated IDOR in Profile Endpoint",
-                    severity: "HIGH",
-                    cvss_score: "8.2",
-                    cvss_vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N",
-                    description: "The /api/v3/profile endpoint allows unauthenticated access to arbitrary user profiles via ID manipulation.",
-                    mitigation: "Implement strict authorization checks. Ensure the requesting user owns the ID being accessed.",
-                    poc: "1. GET /api/v3/profile?id=101\n2. Observe 200 OK with victim data."
-                };
 
-                setOutput(mockResult);
-                setWolfState("success");
-                setIsSucked(false);
-                setInput(""); // Clear input after "sucking"
+            const response = await fetch("/api/analyze", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ input }),
+            });
 
-                // Reset to idle after a moment
-                setTimeout(() => setWolfState("idle"), 5000);
-            }, 2500); // Processing time
-        }, 1500); // Scanning time
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            setOutput(data);
+            setWolfState("success");
+            setIsSucked(false);
+            setInput("");
+
+            // Reset to idle after a moment
+            setTimeout(() => setWolfState("idle"), 5000);
+
+        } catch (error) {
+            console.error("Triage Failed:", error);
+            setWolfState("error");
+            setIsSucked(false);
+            // Optional: Show error state in UI
+        }
     };
 
     const copyToClipboard = () => {
