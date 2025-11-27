@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #050505;
+  --color-foreground: #ededed;
+  --color-red-500: #FF003C;
+  --color-red-600: #D90032;
+  --color-red-900: #33000C;
+  --color-gray-900: #0A0A0A;
+  --color-gray-800: #121212;
+  
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-glitch: glitch 1s linear infinite;
+
+  @keyframes glitch {
+    2%, 64% { transform: translate(2px,0) skew(0deg); }
+    4%, 60% { transform: translate(-2px,0) skew(0deg); }
+    62% { transform: translate(0,0) skew(5deg); }
+  }
+}
+
+:root {
+  --background: #050505;
+  --foreground: #ededed;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-orbitron), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Utilities */
+.text-neon-red {
+  color: #FF003C;
+  text-shadow: 0 0 10px rgba(255, 0, 60, 0.5);
+}
+
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, #1a1a1a 1px, transparent 1px),
+                    linear-gradient(to bottom, #1a1a1a 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+}
